@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Head from "next/head";
 import { useQuery } from "react-query";
-
-import { getWeatherList } from "../lib/api";
+import { getWeather } from "../lib/service";
 
 const API_KEY = process.env.API_KEY;
 
@@ -25,33 +24,26 @@ type HomeProps = {
 
 export default function Home({ API_KEY }: HomeProps) {
   const [input, setInput] = useState("tampa");
-  // const [showDetailedWeather, setShowDetailedWeather] = useState<boolean>(false);
+  const [cityName, setCityName] = useState("");
 
   const {
     isLoading,
     isError,
     data: cityData,
     refetch,
-    isFetching
+    isFetching,
   } = useQuery(["citiesList"], () =>
     fetch(`/api/cities?city=${input}`).then((d) => d.json())
   );
 
-  // const {
-  //   data,
-  //   refetch: refetchWeather,
-  //   isFetching,
-  // } = useQuery(
-  //   ["weather"],
-  //   () => getWeatherList(cityData.citiesList, API_KEY),
-  //   {
-  //     enabled: !!cityData,
-  //   }
-  // );
+  const { data: weatherData, refetch: refetchWeather } = useQuery(
+    ["weather", cityName],
+    () => getWeather(cityName, API_KEY)
+  );
 
-  // React.useEffect(() => {
-  //   refetchWeather();
-  // }, [cityData]);
+  React.useEffect(() => {
+    refetchWeather();
+  }, [cityName]);
 
   if (isLoading) {
     return <span>Loading...</span>;
@@ -98,14 +90,24 @@ export default function Home({ API_KEY }: HomeProps) {
             {/* <div>{el.weather[0].main}</div> */}
             <button
               className="p-3 bg-green-600 rounded-2xl"
-              // onClick={() => showDetailedWeather()}
+              onClick={() => setCityName(el.name)}
             >
               Click
             </button>
           </li>
         ))}
 
-  
+      <section>
+        <h3>Weather info central!</h3>
+        {weatherData && (
+          <>
+            <div>{weatherData.name}</div>
+            <div>{weatherData.country}</div>
+            <div>{weatherData.timezone}</div>
+            <div>{weatherData.main.humidity}</div>
+          </>
+        )}
+      </section>
     </div>
   );
 }
