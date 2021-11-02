@@ -59,7 +59,7 @@ export default function Home({ API_KEY }: HomeProps) {
   }
 
   return (
-    <div className="p-4 grid sm:grid-cols-2 xs:grid xs:grid-cols-1 gap-4">
+    <div className="prose p-4 grid sm:grid-cols-2 xs:grid-cols-1 gap-4 mx-auto">
       <Head>
         <title>Weather Finder</title>
         <meta
@@ -96,13 +96,13 @@ export default function Home({ API_KEY }: HomeProps) {
           </button>
         </form>
 
-        <ul className="grid gap-4">
+        <ul className="grid">
           {cityData &&
             cityData.citiesList.map((city: CityList) => (
               <li
                 key={city.id}
                 className="
-                grid grid-cols-2 gap-8 p-4 items-center
+                grid grid-cols-2 gap-4 p-4 items-center
               bg-gray-200 rounded-md"
                 onClick={() => setDisplayedWeather(city.name)}
               >

@@ -1,4 +1,6 @@
 import React from "react";
+import Image from 'next/image'
+
 import { WeatherReturnData } from "../lib/api";
 import { getFlagEmoji } from "../utils/getFlagEmoji";
 
@@ -23,21 +25,36 @@ export const RightPanal = ({
         ) : null}
 
         {weatherData ? (
-          <div className="bg-indigo-200 rounded-md p-3">
-            <ul className="grid grid-cols-1 bg-indigo-300 p-3 ">
+          <div className="bg-indigo-400 rounded-md p-3 text-white">
+            <ul className="grid grid-cols-1 bg-indigo-500 p-3 ">
               <li>{weatherData.name}</li>
               <li>{getFlagEmoji(weatherData.sys.country)}</li>
               <li>{weatherData.weather[0].main}</li>
               <li>{weatherData.timezone}</li>
               <li>{weatherData.main.humidity}</li>
             </ul>
-            <img
+            <Image
               src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
+              height={200}
+              width={200}
               alt={`${weatherData.weather[0].description}`}
             />
           </div>
-        ) : null}
+        ) : (
+          <Fallback />
+        )}
       </section>
     </div>
   );
 };
+
+function Fallback() {
+  return (
+    <div className="bg-indigo-400 rounded-md p-3 text-white">
+      <ul className="grid grid-cols-1 bg-indigo-500 p-3 ">
+        <li>Loading . . .</li>
+        <li>Loading . . .</li>
+      </ul>
+    </div>
+  );
+}
