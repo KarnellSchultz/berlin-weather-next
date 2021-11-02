@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useQuery } from "react-query";
 import { getWeather } from "../lib/service";
-import { CityList } from "../lib/api/cities";
+// import { CityList } from "../lib/api/cities";
 
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { getFlagEmoji } from "../utils/getFlagEmoji";
@@ -98,7 +98,7 @@ export default function Home({ API_KEY }: HomeProps) {
 
         <ul className="grid">
           {cityData &&
-            cityData.citiesList.map((city: CityList) => (
+            cityData.citiesList.map((city) => (
               <li
                 key={city.id}
                 className="
