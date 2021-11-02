@@ -59,7 +59,7 @@ export default function Home({ API_KEY }: HomeProps) {
   }
 
   return (
-    <div className="p-4 grid grid-cols-2 gap-4">
+    <div className="p-4 grid sm:grid-cols-2 xs:grid xs:grid-cols-1 gap-4">
       <Head>
         <title>Weather Finder</title>
         <meta
@@ -71,7 +71,7 @@ export default function Home({ API_KEY }: HomeProps) {
 
       <FetchingIndicator isFetching={isFetching} />
 
-      <div className="h-screen bg-gray-50 flex flex-col">
+      <div className=" bg-gray-50 flex flex-col">
         <h2>Weather Report</h2>
         <form
           onSubmit={(e) => {
