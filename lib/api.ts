@@ -2,6 +2,7 @@ export type WeatherReturnData = {
   id?: number;
   name?: string;
   timezone: number;
+  sys?: Sys;
   weather?: {
     id: number;
     main: string;
@@ -20,17 +21,23 @@ export type WeatherReturnData = {
   };
 };
 
+type Sys = {
+  type?: number;
+  id?: number;
+  country?: string;
+  sunrise?: number;
+  sunset?: number;
+}
 
 type CityList = {
-    id: number;
-    name: string;
-    country: string;
-    stat: {
-      level: number;
-      population: number;
-    };
+  id: number;
+  name: string;
+  country: string;
+  stat: {
+    level: number;
+    population: number;
   };
-  
+};
 
 export type GetWeather = (
   cityNameSeachKey?: string,

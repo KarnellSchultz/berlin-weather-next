@@ -1,6 +1,6 @@
 import cities from "../../current.city.list.json";
 
-type CityList = {
+export type CityList = {
   id: number;
   name: string;
   country: string;

@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import Image from "next/image";
 import { useQuery } from "react-query";
 import { getWeather } from "../lib/service";
+import { CityList } from "../lib/api/cities";
 
 import { useLocalStorage } from "../hooks/useLocalStorage";
-
-const API_KEY = process.env.API_KEY;
-
-// const BASE_URL = `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
-
-// const fetchWeather = async (cityName) => {
-//   const resp = await fetch(
-//     `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${process.env.API_KEY}`
-//   );
-//   if (!resp.ok) {
-//     throw new Error("Network response was not ok");
-//   }
-//   const data = await resp.json();
-//   return data;
-// };
+import { getFlagEmoji } from "../utils/getFlagEmoji";
+import { RightPanal } from "../components/RightPanal";
+import { FetchingIndicator } from "../components/FetchingIndicator";
 
 type HomeProps = {
   API_KEY?: string;
@@ -34,20 +22,31 @@ export default function Home({ API_KEY }: HomeProps) {
 
   const {
     isLoading,
-    isError,
+    isError: isCitiesError,
     data: cityData,
-    refetch,
-    isFetching,
+    refetch: refetchCities,
+    isFetching: isCitiesFetching,
   } = useQuery(["citiesList"], () =>
     fetch(`/api/cities?city=${userInput}`).then((d) => d.json())
   );
 
-  const { data: weatherData, refetch: refetchWeather } = useQuery(
+  const {
+    data: weatherData,
+    refetch: refetchWeather,
+    isSuccess: isWeatherSuccess,
+    isFetching: isWeatherFetching,
+    isError: isWeatherError,
+  } = useQuery(
     ["weather", displayedWeather],
-    () => getWeather(displayedWeather, API_KEY)
+    () => getWeather(displayedWeather, API_KEY),
+    {
+      refetchInterval: 1000 * 10, // ten seconds
+    }
   );
 
-  React.useEffect(() => {
+  let isFetching = isCitiesFetching || isWeatherFetching;
+
+  useEffect(() => {
     refetchWeather();
   }, [displayedWeather]);
 
@@ -55,8 +54,8 @@ export default function Home({ API_KEY }: HomeProps) {
     return <span>Loading...</span>;
   }
 
-  if (isError) {
-    return <span>Error: {error.message}</span>;
+  if (isCitiesError) {
+    return <span>There has been an error. . .</span>;
   }
 
   return (
@@ -69,12 +68,15 @@ export default function Home({ API_KEY }: HomeProps) {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <FetchingIndicator isFetching={isFetching} />
+
       <div className="h-screen bg-gray-50 flex flex-col">
         <h2>Weather Report</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            refetch();
+            refetchCities();
           }}
         >
           <input
@@ -88,38 +90,32 @@ export default function Home({ API_KEY }: HomeProps) {
           active:bg-indigo-500 p-2 shadow-sm rounded-md mb-2
           "
             type="button"
-            onClick={() => refetch()}
+            onClick={() => refetchCities()}
           >
             Search
           </button>
         </form>
-        {isFetching && (
-          <div className="lds-ripple">
-            <div></div>
-            <div></div>
-          </div>
-        )}
 
         <ul className="grid gap-4">
           {cityData &&
-            cityData.citiesList.map((el) => (
+            cityData.citiesList.map((city: CityList) => (
               <li
-                key={el.id}
+                key={city.id}
                 className="
                 grid grid-cols-2 gap-8 p-4 items-center
               bg-gray-200 rounded-md"
-                onClick={() => setDisplayedWeather(el.name)}
+                onClick={() => setDisplayedWeather(city.name)}
               >
                 <div>
-                  <div>{el.name}</div>
-                  <div>{el.country}</div>
+                  <div>{city.name}</div>
+                  <div>{city.country}</div>
+                  <div>{getFlagEmoji(city.country)}</div>
                 </div>
-                {/* <div>{el.weather[0].main}</div> */}
                 <button
                   className="p-3 bg-indigo-400 hover:bg-indigo-300
                 focus:bg-indigo-500 focus:text-white
                   rounded-md"
-                  onClick={() => setDisplayedWeather(el.name)}
+                  onClick={() => setDisplayedWeather(city.name)}
                 >
                   Click
                 </button>
@@ -127,24 +123,11 @@ export default function Home({ API_KEY }: HomeProps) {
             ))}
         </ul>
       </div>
-      <section className="flex flex-col flex-auto">
-        <h3>Weather info central!</h3>
-        {weatherData && (
-          <div className="bg-indigo-200 rounded-md p-3">
-            <ul className="grid grid-cols-2">
-              <li>{weatherData.name}</li>
-              <li>{weatherData.country}</li>
-              <li>{weatherData.timezone}</li>
-              <li>{weatherData.main.humidity}</li>
-              <li>{weatherData.weather[0].main}</li>
-            </ul>
-            <img
-              src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
-              alt={`${weatherData.weather[0].description}`}
-            />
-          </div>
-        )}
-      </section>
+      <RightPanal
+        weatherData={weatherData}
+        isWeatherError={isWeatherError}
+        isWeatherSuccess={isWeatherSuccess}
+      />
     </div>
   );
 }
