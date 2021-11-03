@@ -35,8 +35,8 @@ export const RightPanal = ({
             </ul>
             <Image
               src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
-              height={200}
-              width={200}
+              height={120}
+              width={120}
               alt={`${weatherData.weather[0].description}`}
             />
           </div>
