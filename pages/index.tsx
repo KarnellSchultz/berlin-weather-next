@@ -48,7 +48,7 @@ export default function Home({ API_KEY }: HomeProps) {
 
   useEffect(() => {
     refetchWeather();
-  }, [displayedWeather]);
+  }, [displayedWeather, refetchWeather]);
 
   if (isLoading) {
     return <span>Loading...</span>;
