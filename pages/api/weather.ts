@@ -25,7 +25,7 @@ export type GetWeather = (
 ) => Promise<WeatherReturnData>;
 export const getWeather: GetWeather = async (cityNameSeachKey, API_KEY) => {
   const resp = await fetch(
-    `http://api.openweathermap.org/data/2.5/weather?q=${cityNameSeachKey}&appid=${process.env.API_KEY}`
+    `https://api.openweathermap.org/data/2.5/weather?q=${cityNameSeachKey}&appid=${process.env.API_KEY}`
   );
   if (!resp.ok) {
     throw new Error("Network response was not ok");
