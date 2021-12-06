@@ -10,7 +10,7 @@ export type WeatherReturnData = {
     icon: string;
   }[];
   visibility?: number;
-  wind?: { speed: number; deg: 84; gust: number };
+  wind?: { speed: number; deg: number; gust: number };
   main?: {
     temp: number;
     feels_like: number;

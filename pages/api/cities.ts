@@ -10,7 +10,7 @@ export type CityList = {
   };
 };
 
-const compareNumbers = (a, b) => {
+const compareNumbers = (a: number, b: number) => {
   return b - a;
 };
 
@@ -27,14 +27,3 @@ export default async (req, res) => {
 
   res.status(200).json({ citiesList: slicedCityList });
 };
-
-// try {
-//   const data: WeatherReturnData[] = await Promise.all(
-//     filteredCitiesList.map((town) => getWeather(town.name))
-//   );
-//   console.log(">>>DONE", data);
-//   return res.status(200).json({ city: data });
-// } catch (error) {
-//   console.error(error);
-//   res.status(400).json({ error: "oh no" });
-// }

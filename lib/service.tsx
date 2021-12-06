@@ -9,10 +9,7 @@ export const getWeather = async (cityName = "tampa", API_KEY: string) => {
   return data;
 };
 
-export async function getServerSideProps(context) {
-  console.log(process.env.API_KEY);
-  console.log(context);
-
+export async function getServerSideProps() {
   return {
     props: {
       API_KEY: process.env.API_KEY,

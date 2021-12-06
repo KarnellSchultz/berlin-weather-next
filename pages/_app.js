@@ -4,7 +4,6 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import "tailwindcss/tailwind.css";
 import "../styles/spinner.css"
 
-// Create a client
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }) {

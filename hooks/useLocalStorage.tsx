@@ -6,6 +6,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   // To avoid accessing window before it's present
   useEffect(() => {
     init();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const init = () => {

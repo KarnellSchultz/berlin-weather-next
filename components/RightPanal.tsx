@@ -1,20 +1,16 @@
 import React from "react";
-import Image from 'next/image'
+import Image from "next/image";
 
 import { WeatherReturnData } from "../lib/api";
 import { getFlagEmoji } from "../utils/getFlagEmoji";
 
 type Props = {
   weatherData: WeatherReturnData;
-  isWeatherSuccess: boolean;
+  isWeatherSuccess?: boolean;
   isWeatherError: boolean;
 };
 
-export const RightPanal = ({
-  weatherData,
-  isWeatherSuccess,
-  isWeatherError,
-}: Props) => {
+export const RightPanal = ({ weatherData, isWeatherError }: Props) => {
   return (
     <div>
       <section className="flex flex-col flex-auto">
@@ -30,8 +26,7 @@ export const RightPanal = ({
               <li>{weatherData.name}</li>
               <li>{getFlagEmoji(weatherData.sys.country)}</li>
               <li>{weatherData.weather[0].main}</li>
-              <li>{weatherData.timezone}</li>
-              <li>{weatherData.main.humidity}</li>
+              <li>Humidity: {weatherData.main.humidity}</li>
             </ul>
             <Image
               src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
