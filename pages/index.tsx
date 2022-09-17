@@ -1,20 +1,35 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import { useQuery } from "react-query";
-import { getWeather } from "../lib/service";
-// import { CityList } from "../lib/api/cities";
+import { GetStaticProps } from "next";
+import { dehydrate, QueryClient, useQuery } from "react-query";
+import { APIService } from "../lib/service";
 
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { getFlagEmoji } from "../utils/getFlagEmoji";
-import { RightPanal } from "../components/RightPanal";
+import { RightPanel } from "../components/RightPanel";
 import { FetchingIndicator } from "../components/FetchingIndicator";
 
-type HomeProps = {
-  API_KEY?: string;
+export const getStaticProps: GetStaticProps = async () => {
+  const baseUrl =
+    process.env.NODE_ENV === "development"
+      ? process.env.HOST
+      : process.env.PRODUCTION_URL;
+
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery(["citiesList"], () =>
+    APIService.GetCities(baseUrl)
+  );
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      env: baseUrl,
+    },
+  };
 };
 
-export default function Home({ API_KEY }: HomeProps) {
-  const [userInput, setUserInput] = useState<string>("");
+type HomeProps = { env: string };
+export default function Home({ env }: HomeProps) {
+  const [userInput, setUserInput] = useState<string>();
   const [displayedWeather, setDisplayedWeather] = useLocalStorage<string>(
     "displayedWeather",
     "berlin"
@@ -26,9 +41,7 @@ export default function Home({ API_KEY }: HomeProps) {
     data: cityData,
     refetch: refetchCities,
     isFetching: isCitiesFetching,
-  } = useQuery(["citiesList"], () =>
-    fetch(`/api/cities?city=${userInput}`).then((d) => d.json())
-  );
+  } = useQuery(["citiesList"], () => APIService.GetCities(env, userInput));
 
   const {
     data: weatherData,
@@ -38,7 +51,7 @@ export default function Home({ API_KEY }: HomeProps) {
     isError: isWeatherError,
   } = useQuery(
     ["weather", displayedWeather],
-    () => getWeather(displayedWeather, API_KEY),
+    () => APIService.GetWeather(env, displayedWeather),
     {
       refetchInterval: 1000 * 10, // ten seconds
     }
@@ -49,10 +62,6 @@ export default function Home({ API_KEY }: HomeProps) {
   useEffect(() => {
     refetchWeather();
   }, [displayedWeather, refetchWeather]);
-
-  if (isLoading) {
-    return <span>Loading...</span>;
-  }
 
   if (isCitiesError) {
     return <span>There has been an error. . .</span>;
@@ -98,7 +107,7 @@ export default function Home({ API_KEY }: HomeProps) {
 
         <ul className="grid">
           {cityData &&
-            cityData.citiesList.map((city) => (
+            cityData.map((city) => (
               <li
                 key={city.id}
                 className="
@@ -123,19 +132,11 @@ export default function Home({ API_KEY }: HomeProps) {
             ))}
         </ul>
       </div>
-      <RightPanal
+      <RightPanel
         weatherData={weatherData}
         isWeatherError={isWeatherError}
         isWeatherSuccess={isWeatherSuccess}
       />
     </div>
   );
-}
-
-export async function getStaticProps() {
-  return {
-    props: {
-      API_KEY: process.env.API_KEY,
-    },
-  };
 }
