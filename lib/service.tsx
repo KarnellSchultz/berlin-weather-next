@@ -1,21 +1,5 @@
+import { CityReturnDataType } from "../pages/api/city/[city]";
 export const MOST_POPULATED = "most-populated";
-
-export type CityReturnDataType = {
-  data: {
-    id: number;
-    wikiDataId: string;
-    type: string;
-    city: string;
-    name: string;
-    country: string;
-    countryCode: string;
-    region: string;
-    regionCode: string;
-    latitude: number;
-    longitude: number;
-    population: number;
-  }[];
-};
 
 type APIServiceType = {
   GetWeather: (cityName?: string) => Promise<any>;
@@ -31,13 +15,11 @@ export const APIService: APIServiceType = {
     }
     return await res.json();
   },
-  GetCities: async (cityName = "") => {
-    const url = `http://geodb-free-service.wirefreethought.com/v1/geo/cities?namePrefix=${cityName}&hateoasMode=false&limit=5&offset=0&sort=-population`;
-    const res = await fetch(url);
+  GetCities: async (cityName = MOST_POPULATED) => {
+    const res = await fetch(`/api/city/${cityName}`);
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }
-
     return await res.json();
   },
 };

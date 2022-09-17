@@ -6,7 +6,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { getFlagEmoji } from "../utils/getFlagEmoji";
 import { RightPanel } from "../components/RightPanel";
 import { FetchingIndicator } from "../components/FetchingIndicator";
-import { APIService, CityReturnDataType } from "../lib/service";
+import { APIService } from "../lib/service";
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
