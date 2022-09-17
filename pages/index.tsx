@@ -27,7 +27,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 type HomeProps = { env: string };
-export default function Home({ env }: HomeProps) {
+export default function Home({ env = null }: HomeProps) {
   const [userInput, setUserInput] = useState<string>();
   const [displayedWeather, setDisplayedWeather] = useLocalStorage<string>(
     "displayedWeather",
