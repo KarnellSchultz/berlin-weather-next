@@ -6,7 +6,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { getFlagEmoji } from "../utils/getFlagEmoji";
 import { RightPanel } from "../components/RightPanel";
 import { FetchingIndicator } from "../components/FetchingIndicator";
-import { APIService } from "../lib/service";
+import { APIService, CityReturnDataType } from "../lib/service";
 
 export const getStaticProps: GetStaticProps = async () => {
   const baseUrl =
@@ -15,9 +15,7 @@ export const getStaticProps: GetStaticProps = async () => {
       : process.env.PRODUCTION_URL;
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(["citiesList"], () =>
-    APIService.GetCities(baseUrl)
-  );
+  await queryClient.prefetchQuery(["citiesList"], () => APIService.GetCities());
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
@@ -40,7 +38,7 @@ export default function Home({ env = null }: HomeProps) {
     data: cityData,
     refetch: refetchCities,
     isFetching: isCitiesFetching,
-  } = useQuery(["citiesList"], () => APIService.GetCities(env, userInput));
+  } = useQuery(["citiesList"], () => APIService.GetCities(userInput));
 
   const {
     data: weatherData,
@@ -106,24 +104,24 @@ export default function Home({ env = null }: HomeProps) {
 
         <ul className="grid">
           {cityData &&
-            cityData.map((city) => (
+            cityData.data.map((city) => (
               <li
                 key={city.id}
                 className="
                 grid grid-cols-2 gap-4 p-4 items-center
               bg-gray-200 rounded-md"
-                onClick={() => setDisplayedWeather(city.name)}
+                onClick={() => setDisplayedWeather(city.city)}
               >
                 <div>
-                  <div>{city.name}</div>
+                  <div>{city.city}</div>
                   <div>{city.country}</div>
-                  <div>{getFlagEmoji(city.country)}</div>
+                  <div>{getFlagEmoji(city.countryCode)}</div>
                 </div>
                 <button
                   className="p-3 bg-indigo-400 hover:bg-indigo-300
                 focus:bg-indigo-500 focus:text-white
                   rounded-md"
-                  onClick={() => setDisplayedWeather(city.name)}
+                  onClick={() => setDisplayedWeather(city.city)}
                 >
                   Click
                 </button>
