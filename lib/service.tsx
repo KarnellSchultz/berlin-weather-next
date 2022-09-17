@@ -7,22 +7,21 @@ type APIServiceType = {
 
 export const APIService: APIServiceType = {
   GetWeather: async (envBasedUrl, cityName = "Shanghai") => {
-    const baseUrl = new URL("/api/weather/", envBasedUrl);
-    const url = new URL(cityName, baseUrl);
-    const resp = await fetch(url);
-    if (!resp.ok) {
+    const url = `${envBasedUrl}/api/weather/${cityName}`;
+    const res = await fetch(url);
+    if (!res.ok) {
       throw new Error("Network response was not ok");
     }
-    return await resp.json();
+    return await res.json();
   },
   GetCities: async (envBasedUrl, cityName = MOST_POPULATED) => {
-    const baseUrl = new URL("/api/city/", envBasedUrl);
-    const url = new URL(cityName, baseUrl);
-
+    const url = `${envBasedUrl}/api/city/${cityName}`;
     const res = await fetch(url);
-    const data = await res.json();
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
 
-    return data;
+    return await res.json();
   },
 };
 

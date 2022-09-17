@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { GetStaticProps } from "next";
 import { dehydrate, QueryClient, useQuery } from "react-query";
-import { APIService } from "../lib/service";
-
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { getFlagEmoji } from "../utils/getFlagEmoji";
 import { RightPanel } from "../components/RightPanel";
 import { FetchingIndicator } from "../components/FetchingIndicator";
+import { APIService } from "../lib/service";
 
 export const getStaticProps: GetStaticProps = async () => {
   const baseUrl =

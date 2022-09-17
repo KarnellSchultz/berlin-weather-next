@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-import { WeatherReturnData } from "../lib/api";
+import { WeatherReturnData } from "../pages/api/weather/[location]";
 import { getFlagEmoji } from "../utils/getFlagEmoji";
 
 type Props = {

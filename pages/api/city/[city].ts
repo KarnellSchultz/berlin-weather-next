@@ -23,7 +23,7 @@ export default function getCity(
   const city = req.query.city as string;
 
   if (city === MOST_POPULATED) {
-    const filteredCitiesList: CityList = cities.sort((a, b) =>
+    const filteredCitiesList = [cities as unknown as CityList].sort((a, b) =>
       compareNumbers(a.stat.population, b.stat.population)
     );
 
@@ -31,7 +31,7 @@ export default function getCity(
     return res.status(200).json(slicedCityList);
   }
 
-  const filteredCitiesList: CityList = cities
+  const filteredCitiesList = [cities as unknown as CityList]
     .filter((el) => el.name.toLowerCase().includes(city.toLowerCase()))
     .sort((a, b) => compareNumbers(a.stat.population, b.stat.population));
 

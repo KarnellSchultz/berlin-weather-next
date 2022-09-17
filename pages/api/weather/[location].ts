@@ -2,6 +2,9 @@ export type WeatherReturnData = {
   id?: number;
   name?: string;
   timezone: number;
+  sys: {
+    country: string;
+  };
   weather?: {
     id: number;
     main: string;
@@ -20,14 +23,19 @@ export type WeatherReturnData = {
   };
 };
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function weather(req: NextApiRequest, res: NextApiResponse<WeatherReturnData>) {
-const {
-  query: { location }
-} = req
-const fetchRes = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location as string)}&appid=${process.env.API_KEY}`)  
-  return res.status(200).json(await fetchRes.json())
-
+export default async function weather(
+  req: NextApiRequest,
+  res: NextApiResponse<WeatherReturnData>
+) {
+  const {
+    query: { location },
+  } = req;
+  const fetchRes = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+      location as string
+    )}&appid=${process.env.API_KEY}`
+  );
+  return res.status(200).json(await fetchRes.json());
 }
