@@ -9,23 +9,16 @@ import { FetchingIndicator } from "../components/FetchingIndicator";
 import { APIService, CityReturnDataType } from "../lib/service";
 
 export const getStaticProps: GetStaticProps = async () => {
-  const baseUrl =
-    process.env.NODE_ENV === "development"
-      ? process.env.HOST
-      : process.env.PRODUCTION_URL;
-
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery(["citiesList"], () => APIService.GetCities());
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
-      env: baseUrl,
     },
   };
 };
 
-type HomeProps = { env: string };
-export default function Home({ env = null }: HomeProps) {
+export default function Home() {
   const [userInput, setUserInput] = useState<string>();
   const [displayedWeather, setDisplayedWeather] = useLocalStorage<string>(
     "displayedWeather",
@@ -46,14 +39,14 @@ export default function Home({ env = null }: HomeProps) {
     isSuccess: isWeatherSuccess,
     isFetching: isWeatherFetching,
     isError: isWeatherError,
+    error: weatherError,
   } = useQuery(
     ["weather", displayedWeather],
-    () => APIService.GetWeather(env, displayedWeather),
+    () => APIService.GetWeather(displayedWeather),
     {
       refetchInterval: 1000 * 10, // ten seconds
     }
   );
-
   let isFetching = isCitiesFetching || isWeatherFetching;
 
   useEffect(() => {
@@ -129,6 +122,7 @@ export default function Home({ env = null }: HomeProps) {
             ))}
         </ul>
       </div>
+
       <RightPanel
         weatherData={weatherData}
         isWeatherError={isWeatherError}

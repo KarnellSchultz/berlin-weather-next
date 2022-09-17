@@ -1,27 +1,28 @@
-export type WeatherReturnData = {
-  id?: number;
-  name?: string;
-  timezone: number;
-  sys: {
-    country: string;
-  };
-  weather?: {
-    id: number;
-    main: string;
-    description: string;
-    icon: string;
-  }[];
-  visibility?: number;
-  wind?: { speed: number; deg: 84; gust: number };
-  main?: {
-    temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    pressure: number;
-    humidity: number;
-  };
-};
+export type WeatherReturnData =
+  | {
+      id?: number;
+      name?: string;
+      timezone: number;
+      sys: {
+        country: string;
+      };
+      weather?: {
+        id: number;
+        main: string;
+        description: string;
+        icon: string;
+      }[];
+      visibility?: number;
+      wind?: { speed: number; deg: 84; gust: number };
+      main?: {
+        temp: number;
+        feels_like: number;
+        temp_min: number;
+        temp_max: number;
+        pressure: number;
+        humidity: number;
+      };
+    }
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -37,5 +38,13 @@ export default async function weather(
       location as string
     )}&appid=${process.env.API_KEY}`
   );
-  return res.status(200).json(await fetchRes.json());
+
+  const data = await fetchRes.json();
+  console.log("STATUS TEXT", fetchRes.statusText);
+  if (fetchRes.status !== 200) {
+    res.statusMessage = fetchRes.statusText;
+    return res.status(fetchRes.status).json(data);
+  }
+
+  return res.status(200).json(data);
 }

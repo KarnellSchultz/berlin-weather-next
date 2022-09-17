@@ -18,15 +18,15 @@ export type CityReturnDataType = {
 };
 
 type APIServiceType = {
-  GetWeather: (envBasedUrl: string, cityName?: string) => Promise<any>;
+  GetWeather: (cityName?: string) => Promise<any>;
   GetCities: (cityName?: string) => Promise<CityReturnDataType>;
 };
 
 export const APIService: APIServiceType = {
-  GetWeather: async (envBasedUrl, cityName = "Shanghai") => {
-    const url = `${envBasedUrl}/api/weather/${cityName}`;
+  GetWeather: async (cityName = "Shanghai") => {
+    const url = `/api/weather/${cityName}`;
     const res = await fetch(url);
-    if (!res.ok) {
+    if (res.status !== 200) {
       throw new Error("Network response was not ok");
     }
     return await res.json();
@@ -41,13 +41,3 @@ export const APIService: APIServiceType = {
     return await res.json();
   },
 };
-
-// type GetWeatherList = (cityNames: string[]) => Promise<any>;
-// export const getWeatherList: GetWeatherList = (cityNames) =>
-//   Promise.all(
-//     cityNames.map((city) => {
-//       city = city.toLocaleLowerCase().replaceAll(" ", "");
-
-//       return APIService.GetWeather(city);
-//     })
-//   );
